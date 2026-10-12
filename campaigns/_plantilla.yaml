@@ -1,0 +1,20 @@
+# Copia este archivo como <slug>.yaml, o pídele al orquestador: /campaign <link o texto del brief>
+slug: ejemplo-podcast
+name: Podcast de negocios (ejemplo)
+url: https://whop.com/...            # link de la campaña
+niche: negocios
+account: tech-es                     # cuenta donde se publica
+rate_per_1k: 1.5                     # USD por cada 1,000 vistas verificadas
+platforms: [tiktok, instagram, youtube]
+min_seconds: 20
+max_seconds: 90
+language: es
+source_urls:                         # material autorizado por la campaña
+  - https://www.youtube.com/watch?v=XXXXXXXXXXX
+required_hashtags: []                # sin '#'
+required_mentions: []                # ej. "@creador"
+required_text: []                    # textos obligatorios en la descripción
+banned: []                           # temas o palabras prohibidas
+notes: |
+  Reglas extra del brief que no caben arriba.
+active: false

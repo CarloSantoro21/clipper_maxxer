@@ -1,0 +1,12 @@
+# Datos de trabajo (videos, transcripciones, renders) — pesan mucho y no van al repo
+data/
+assets/gameplay/*
+!assets/gameplay/.gitkeep
+
+.env
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+node_modules/
+.DS_Store

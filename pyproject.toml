@@ -1,0 +1,33 @@
+[project]
+name = "clipforge"
+version = "0.1.0"
+description = "Pipeline local de clips verticales (TikTok/Reels/Shorts) orquestado con Claude Code"
+requires-python = ">=3.11"
+dependencies = [
+  "typer>=0.12",
+  "pydantic>=2.6",
+  "pyyaml>=6",
+]
+
+[project.optional-dependencies]
+# Descarga de videos (necesita ffmpeg instalado en el sistema)
+ingest = ["yt-dlp>=2025.1.1"]
+# Transcripción local con timestamps por palabra. En GPU NVIDIA es ~10x más rápido.
+transcribe = ["faster-whisper>=1.1"]
+# Voz para el modo story (voces neuronales gratis de Microsoft Edge)
+tts = ["edge-tts>=6.1"]
+dev = ["pytest>=8"]
+all = ["clipforge[ingest,transcribe,tts,dev]"]
+
+[project.scripts]
+clipforge = "clipforge.cli:app"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["clipforge"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
