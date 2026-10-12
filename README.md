@@ -9,6 +9,8 @@ premisa ────────────────────────
 
 **Principio:** Claude decide y el código renderiza. Cada clip es un spec JSON (inicio, fin, hook, estilo de subtítulos, zooms). Para cambiar algo se edita el spec y se vuelve a renderizar; nadie edita video a mano.
 
+El porqué del proyecto (objetivo, cómo pagan las campañas, decisiones y estado) está en [docs/CONTEXTO.md](docs/CONTEXTO.md).
+
 ## Instalación (Windows, macOS o Linux)
 
 Requisitos: Python 3.11+, [ffmpeg](https://ffmpeg.org/download.html) en el PATH y [Claude Code](https://claude.com/claude-code) con tu sesión iniciada.
