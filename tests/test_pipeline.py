@@ -84,3 +84,12 @@ def test_render_vertical_clip(tmp_path):
     v = next(s for s in probe(out)["streams"] if s["codec_type"] == "video")
     assert (v["width"], v["height"]) == (1080, 1920)
     assert duration_of(out) == pytest.approx(6, abs=0.3)
+
+
+def test_list_campaigns_skips_broken_yaml(tmp_path, monkeypatch):
+    from clipforge import campaigns as camps
+    monkeypatch.setattr(camps, "CAMPAIGNS", tmp_path)
+    (tmp_path / "ok.yaml").write_text("slug: ok\nname: OK\n", encoding="utf-8")
+    (tmp_path / "roto.yaml").write_text("source_urls: [https://x.com/watch?v=1]\n", encoding="utf-8")
+    (tmp_path / "_plantilla.yaml").write_text("slug: _p\nname: P\n", encoding="utf-8")
+    assert [c.slug for c in camps.list_campaigns()] == ["ok"]

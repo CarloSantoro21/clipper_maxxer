@@ -45,7 +45,7 @@ export default function StoryPage() {
     const dirty = form !== null && JSON.stringify(form) !== baseline;
     if (loadedFor.current !== id || !dirty) {
       loadedFor.current = id;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setForm(toForm(story.data));
       setBaseline(serverKey);
     }

@@ -59,7 +59,7 @@ export default function ClipPage() {
     const dirty = form !== null && JSON.stringify(form) !== baseline;
     if (loadedFor.current !== clipId || !dirty) {
       loadedFor.current = clipId;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setForm(toForm(clip));
       setBaseline(serverKey);
     }

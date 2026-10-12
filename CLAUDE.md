@@ -16,7 +16,11 @@ clipforge story render <id>
 clipforge campaign list | show <slug> | new <slug>
 clipforge review                            # data/review.html para revisar en el navegador
 clipforge status
+clipforge serve                             # API del dashboard (./scripts/dev.sh levanta API + frontend)
 ```
+
+## Dashboard
+Carlo puede hablarte desde el chat del dashboard. En ese caso cada mensaje llega con una línea de contexto del clip, job o story que tiene abierto: asume que "esto" o "este clip" se refiere a eso. Tras cambiar un spec, re-renderiza con la CLI; el dashboard se refresca solo. Los estados (aprobado, rechazado, publicado) y las métricas los maneja Carlo desde la interfaz: no los cambies salvo que te lo pida.
 
 ## Reglas no negociables
 1. **Sólo contenido con permiso.** El modo clip trabaja con material de una campaña (`campaigns/*.yaml`, campo `source_urls`), contenido propio o licencia libre. Si Carlo pasa un link que no está en ninguna campaña activa, pregúntale de dónde viene el permiso antes de procesarlo.
@@ -41,7 +45,7 @@ La cuenta de destino de cada clip sale de `account` en la campaña. Nichos previ
 
 ## Roadmap
 - [x] Fase 1: CLI clip + story, staging estático (review.html)
-- [ ] Fase 2: dashboard Next.js + FastAPI con preview, aprobar/rechazar y chat que llama a `claude -p`
+- [x] Fase 2: dashboard Next.js + FastAPI con preview, aprobar/rechazar y chat que llama a `claude -p`
 - [ ] Fase 2: recorte inteligente siguiendo la cara del hablante (mediapipe) en lugar de crop_x fijo
 - [ ] Fase 2: traducción EN→ES de subtítulos para la cuenta de traducidos
 - [ ] Fase 3: subagente de tendencias + registro de métricas por clip que retroalimenta el prompt del planner

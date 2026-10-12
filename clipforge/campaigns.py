@@ -1,7 +1,10 @@
 """Campañas en campaigns/<slug>.yaml y validación de specs contra sus reglas."""
 from __future__ import annotations
 
+import sys
+
 import yaml
+from pydantic import ValidationError
 
 from .config import CAMPAIGNS
 from .specs import Campaign, ClipSpec, Transcript
@@ -15,11 +18,15 @@ def load_campaign(slug: str) -> Campaign:
 
 
 def list_campaigns() -> list[Campaign]:
+    """Campañas válidas. Un YAML roto (editado a mano) se salta con aviso en vez de tumbar todo."""
     out = []
     for p in sorted(CAMPAIGNS.glob("*.yaml")):
         if p.name.startswith("_"):
             continue
-        out.append(Campaign.model_validate(yaml.safe_load(p.read_text(encoding="utf-8"))))
+        try:
+            out.append(Campaign.model_validate(yaml.safe_load(p.read_text(encoding="utf-8"))))
+        except (yaml.YAMLError, ValidationError, TypeError) as e:
+            print(f"[clipforge] se ignora {p.name}: no es una campaña válida ({e.__class__.__name__})", file=sys.stderr)
     return out
 
 

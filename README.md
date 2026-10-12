@@ -35,6 +35,27 @@ Abre `claude` en la carpeta del repo y háblale:
 
 Después abre `data/review.html` en el navegador: ahí ves cada clip con su caption y hashtags listos para copiar.
 
+## Dashboard
+
+Interfaz local para revisar, ajustar y aprobar todo sin tocar la terminal. Requiere además Node.js 20+.
+
+```bash
+pip install -e ".[dashboard]"     # ya viene incluido en ".[all]"
+./scripts/dev.sh                  # Windows: .\scripts\dev.ps1
+```
+
+Abre http://localhost:3000. Con `--lan` (Windows: `-Lan`) también lo abres desde tu celular en la misma red Wi-Fi. Úsalo sólo en tu red de casa: el chat puede correr comandos de `clipforge` en tu PC.
+
+| Vista | Para qué |
+|---|---|
+| **Revisión** | Todos los clips y stories renderizados con su video 9:16. Filtras por estado y cuenta, apruebas, rechazas, marcas como publicado y copias el caption. |
+| **Detalle** (clic en un clip) | Ajustas hook, inicio/fin (±0.5 s), encuadre, caption, hashtags y estilo de subtítulos; "Guardar y re-renderizar". Registras link y vistas cuando lo publicas. |
+| **Nuevo** | Lanzas clips (link + campaña + cuántos) o una story (premisa + duración + parte) y ves el progreso y el log de cada tarea. |
+| **Campañas** | Pegas el brief de Whop, Claude arma el borrador, lo revisas y lo guardas. También editas o pausas campañas. |
+| **Chat** | Hablas con el orquestador (Claude Code con este CLAUDE.md). Sabe qué clip tienes abierto: "hazlo 3 s más corto y con otro hook" y lo hace. |
+
+Por debajo: `clipforge serve` levanta la API (FastAPI) en el puerto 8000 y `dashboard/` es la app Next.js. La cola procesa una tarea a la vez.
+
 ## Uso directo de la CLI
 
 ```bash
@@ -56,6 +77,6 @@ clipforge status
 ## Roadmap
 
 - [x] **Fase 1:** CLI modo clip y modo story, validación contra el brief, staging estático
-- [ ] **Fase 2:** dashboard local (Next.js + FastAPI) con preview, aprobar/rechazar y chat con el orquestador
+- [x] **Fase 2:** dashboard local (Next.js + FastAPI) con preview, aprobar/rechazar, edición, cola de tareas, campañas y chat con el orquestador
 - [ ] **Fase 2:** recorte que sigue la cara del hablante; traducción EN→ES de subtítulos
 - [ ] **Fase 3:** subagente de tendencias y métricas por clip que retroalimentan al planner
