@@ -46,37 +46,25 @@ def plan(job_id: str, campaign: Optional[str] = typer.Option(None, "--campaign",
     from .planner import plan as _plan
     from .transcribe import transcribe as _t
     job = load_job(job_id)
+    from .pipeline import format_plan_line
     results = _plan(job, _t(job_id), _campaign(campaign or job.get("campaign")), n)
     for spec, issues in results:
-        flag = "  ⚠ " + "; ".join(issues) if issues else ""
-        typer.echo(f"{spec.id}  {spec.score:>4.1f}  {spec.duration:>4.0f}s  {spec.hook}{flag}")
+        typer.echo(format_plan_line(spec, issues))
 
 
 @app.command()
 def render(job_id: str, only: Optional[list[str]] = typer.Option(None, "--only", help="ids de clips, ej. --only c01")):
     """Renderiza los specs del job (excepto los rechazados)."""
-    from .planner import load_specs, save_specs
-    from .render import render_clip
-    from .transcribe import transcribe as _t
-    t = _t(job_id)
-    out_dir = job_dir(job_id) / "renders"
-    specs = [s for s in load_specs(job_id) if s.status != "rejected" and (not only or s.id in only)]
-    for s in specs:
-        path = render_clip(s, t, out_dir)
-        s.status = "rendered"
+    from .pipeline import render_job
+    for path in render_job(job_id, only, log=lambda _msg: None):
         typer.echo(str(path))
-    save_specs(job_id, specs)
 
 
 @app.command()
 def clip(src: str, campaign: Optional[str] = typer.Option(None, "--campaign", "-c"), n: int = 5):
     """Todo de un jalón: link → clips renderizados."""
-    from .ingest import ingest as _ingest
-    job_id = _ingest(src, campaign)
-    typer.echo(f"job: {job_id}")
-    transcribe(job_id)
-    plan(job_id, campaign, n)
-    render(job_id, None)
+    from .pipeline import clip_pipeline
+    clip_pipeline(src, campaign, n, log=typer.echo)
     review()
 
 
@@ -165,8 +153,24 @@ def story_new(premise: str, seconds: int = 75, part: Optional[int] = None, rende
 @story_app.command("render")
 def story_render(story_id: str):
     """Re-renderiza una historia (después de editar data/stories/<id>/spec.json)."""
-    from .story import load_story, render_story
-    typer.echo(str(render_story(load_story(story_id))))
+    from .pipeline import render_story_by_id
+    typer.echo(str(render_story_by_id(story_id, log=lambda _msg: None)))
+
+
+# ---------------- dashboard ----------------
+
+@app.command()
+def serve(
+    port: int = typer.Option(8000, "--port", "-p"),
+    host: str = typer.Option("127.0.0.1", "--host", help="0.0.0.0 para abrirlo desde el celular en tu red"),
+):
+    """Levanta la API del dashboard (FastAPI) en http://HOST:PORT."""
+    try:
+        import uvicorn
+    except ImportError as e:
+        raise typer.BadParameter("Falta el extra del dashboard: pip install -e '.[dashboard]'") from e
+    from .api import create_app
+    uvicorn.run(create_app(), host=host, port=port)
 
 
 if __name__ == "__main__":

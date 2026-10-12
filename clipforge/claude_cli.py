@@ -32,7 +32,7 @@ def ask_json(prompt: str, schema: dict, model: str | None = None, timeout: int =
     ]
     # cwd temporal: así no carga el CLAUDE.md del orquestador (ahorra contexto y uso de tu plan)
     with tempfile.TemporaryDirectory() as tmp:
-        proc = subprocess.run(cmd, input=prompt, capture_output=True, text=True, timeout=timeout, cwd=tmp)
+        proc = subprocess.run(cmd, input=prompt, capture_output=True, text=True, encoding="utf-8", timeout=timeout, cwd=tmp)
     if proc.returncode != 0:
         raise ClaudeError(proc.stderr.strip() or proc.stdout.strip())
     return parse_claude_output(proc.stdout)

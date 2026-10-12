@@ -5,6 +5,7 @@ Regla del proyecto: Claude nunca edita video directamente. Cualquier cambio
 """
 from __future__ import annotations
 
+from datetime import date
 from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, model_validator
@@ -50,9 +51,21 @@ class Zoom(BaseModel):
     scale: float = Field(1.15, ge=1.0, le=2.0)
 
 
+Platform = Literal["tiktok", "instagram", "youtube", "x"]
+Status = Literal["draft", "approved", "rejected", "rendered", "published"]
+
+
+class PublishMetrics(BaseModel):
+    """Métricas manuales de lo ya publicado (las llenas tú desde el dashboard). Todas opcionales."""
+    published_url: Optional[str] = None
+    platform: Optional[Platform] = None
+    views: Optional[int] = Field(None, ge=0)
+    published_at: Optional[date] = None
+
+
 # ---------- Modo clip ----------
 
-class ClipSpec(BaseModel):
+class ClipSpec(PublishMetrics):
     """Un clip vertical cortado de un video fuente."""
     id: str
     job_id: str
@@ -69,7 +82,7 @@ class ClipSpec(BaseModel):
     crop_x: float = Field(0.5, ge=0, le=1, description="centro horizontal del recorte 9:16 (0=izq, 1=der)")
     captions: CaptionStyle = CaptionStyle()
     zooms: list[Zoom] = []
-    status: Literal["draft", "approved", "rejected", "rendered", "published"] = "draft"
+    status: Status = "draft"
 
     @property
     def duration(self) -> float:
@@ -84,7 +97,7 @@ class ClipSpec(BaseModel):
 
 # ---------- Modo story ----------
 
-class StorySpec(BaseModel):
+class StorySpec(PublishMetrics):
     """Historia narrada con TTS sobre gameplay de fondo."""
     id: str
     title: str
@@ -97,7 +110,7 @@ class StorySpec(BaseModel):
     captions: CaptionStyle = CaptionStyle(position="center", words_per_line=2, size=92)
     part: Optional[int] = None           # para series "Parte 1/2/3"
     hashtags: list[str] = []
-    status: Literal["draft", "approved", "rejected", "rendered", "published"] = "draft"
+    status: Status = "draft"
 
 
 # ---------- Campañas (brief de Whop u otro marketplace) ----------
@@ -110,7 +123,7 @@ class Campaign(BaseModel):
     niche: str = ""
     account: str = ""                    # cuenta donde se publica (ej. "tech-es")
     rate_per_1k: float = 0
-    platforms: list[Literal["tiktok", "instagram", "youtube", "x"]] = ["tiktok", "instagram", "youtube"]
+    platforms: list[Platform] = ["tiktok", "instagram", "youtube"]
     min_seconds: float = 15
     max_seconds: float = 90
     language: str = "es"

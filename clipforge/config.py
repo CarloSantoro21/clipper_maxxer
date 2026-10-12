@@ -35,7 +35,7 @@ class Settings:
 settings = Settings()
 
 DATA = Path(os.environ.get("CLIPFORGE_DATA", ROOT / "data"))
-CAMPAIGNS = ROOT / "campaigns"
+CAMPAIGNS = Path(os.environ.get("CLIPFORGE_CAMPAIGNS", ROOT / "campaigns"))
 PROMPTS = ROOT / "prompts"
 GAMEPLAY = ROOT / "assets" / "gameplay"
 

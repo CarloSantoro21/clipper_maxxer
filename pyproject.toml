@@ -16,8 +16,10 @@ ingest = ["yt-dlp>=2025.1.1"]
 transcribe = ["faster-whisper>=1.1"]
 # Voz para el modo story (voces neuronales gratis de Microsoft Edge)
 tts = ["edge-tts>=6.1"]
+# Dashboard local (API FastAPI; el frontend Next.js vive en dashboard/)
+dashboard = ["fastapi", "uvicorn[standard]", "httpx"]
 dev = ["pytest>=8"]
-all = ["clipforge[ingest,transcribe,tts,dev]"]
+all = ["clipforge[ingest,transcribe,tts,dashboard,dev]"]
 
 [project.scripts]
 clipforge = "clipforge.cli:app"
